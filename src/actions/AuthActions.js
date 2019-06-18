@@ -1,4 +1,6 @@
 import firebase from 'firebase';
+import request from '../services/request'
+import {setToken, getToken} from '../utils/storage'
 import { Actions } from 'react-native-router-flux';
 import {
   EMAIL_CHANGED,
@@ -26,16 +28,28 @@ export const passwordChanged = (text) => {
 export const loginUser = ({ email, password }) => {
   return (dispatch) => {
     dispatch({ type: LOGIN_USER });
+    return request({
+      url: `accounts/login`,
+      method: 'post',
+      data: { username: email, 
+          password: password }
+    }).then(async res => {
+      await setToken(res.data.token)
+      loginUserSuccess(dispatch, res.data.user)
 
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(user => loginUserSuccess(dispatch, user))
-      .catch((error) => {
-        console.log(error);
+    }).catch(error => {
+      console.log(error)
+      loginUserFail(dispatch)
+    })   
+    // firebase.auth().signInWithEmailAndPassword(email, password)
+    //   .then(user => loginUserSuccess(dispatch, user))
+    //   .catch((error) => {
+    //     console.log(error);
 
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-          .then(user => loginUserSuccess(dispatch, user))
-          .catch(() => loginUserFail(dispatch));
-      });
+    //     firebase.auth().createUserWithEmailAndPassword(email, password)
+    //       .then(user => loginUserSuccess(dispatch, user))
+    //       .catch(() => loginUserFail(dispatch));
+    //   });
   };
 };
 
