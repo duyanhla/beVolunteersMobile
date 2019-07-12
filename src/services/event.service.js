@@ -45,10 +45,10 @@ export function deleteEvent(id) {
     method: "delete"
   })
     .then(response => {
-      Alert.success("Xóa thành công");
+      Alert.alert("Xóa thành công");
     })
     .catch(error => {
-      Alert.error("Xóa thất bại");
+      Alert.alert("Xóa thất bại");
     });
 }
 export function getSpecificEvent(eventId) {
@@ -63,10 +63,10 @@ export function joinEvent(id) {
     method: "put"
   })
     .then(response => {
-      Alert.success("Thành công");
+      Alert.alert("Thành công");
     })
     .catch(error => {
-      Alert.error("Thất bại");
+      Alert.alert("Thất bại");
     });
 }
 
@@ -76,10 +76,10 @@ export function unjoinEvent(id) {
     method: "put"
   })
     .then(response => {
-      Alert.success("Thành công");
+      Alert.alert("Thành công");
     })
     .catch(error => {
-      Alert.error("Thất bại");
+      Alert.alert("Thất bại");
     });
 }
 

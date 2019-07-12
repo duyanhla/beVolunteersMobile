@@ -66,6 +66,7 @@ class headerPost extends React.Component {
             )}
           </View>
           <Text note>{format(new Date(this.props.createdAt), "DD/MM/YYYY")}</Text>
+          <Text>{this.props.address}</Text>
         </Body>
       </Left>
     </CardItem> 

@@ -14,17 +14,16 @@ import {
   Icon,
   Left, Body
 } from 'native-base';
-import Comment from "./Comment";
-import Axios from "axios";
+//import Comment from "./Comment";
 import { AsyncStorage,Dimensions } from 'react-native';
 import format from 'date-fns/format';
-import PostHeader from './PostHeader';
+import PostHeader from '../post/PostHeader';
 
 const windowWidth = Dimensions.get('window').width;
 const margin = 20;
 const imgInterval = 5;
 
-class PostDetail extends React.Component {
+class EventDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -105,7 +104,6 @@ class PostDetail extends React.Component {
   }
 
   render() {
-   
     const { activeIndex } = this.state;
     if (this.props.type === "EVENT") {
       this.setState = ({ user: this.props.publisher })
@@ -133,10 +131,27 @@ class PostDetail extends React.Component {
                 objectModel={this.props.type}
               />
             )}
+
+          <Text>Thời gian: </Text>
+          <Text>Số lượng: </Text>
+
+
+          <Text>
+            Từ {format(new Date(this.props.starttime), "DD/MM/YYYY")}
+          </Text>
+          <Text>
+            Đến {format(new Date(this.props.endtime), "DD/MM/YYYY")}
+          </Text>
+
+          <Text>
+            {this.props.volunteers.length}/
+                        {this.props.numVolunteers}
+          </Text>
+
           <CardItem >
-            <Body>    
-              <Image source={{ uri: 'http://172.105.113.23:3000/resources/' + this.props.filenames[0] }} 
-              style={{
+            <Body>
+              <Image source={{ uri: 'http://172.105.113.23:3000/resources/' + this.props.filenames[0] }}
+                style={{
                 width: (windowWidth),
                 height: (windowWidth),
                 marginLeft: -20,
@@ -158,7 +173,7 @@ class PostDetail extends React.Component {
                   this.props.myUser._id,
                   this.props.volunteers
                 ) ?
-                  <Button warning
+                  <Button
                     iconLeft
                     onPress={() => this.props.unjoinEvent(this.props._id)}
                     style={{marginLeft:-15}}
@@ -168,7 +183,7 @@ class PostDetail extends React.Component {
                     <Text>Hủy</Text>
                   </Button>
                   : (
-                    <Button info
+                    <Button
                     style={{marginLeft:-15}}
                       onPress={() => this.props.joinToEvent(this.props._id)}
                       disabled={this.props.myUser.isVerified === false || this.props.myUser.permission != "USER"}
@@ -180,18 +195,18 @@ class PostDetail extends React.Component {
 
               </CardItem>
             )}
-            {/* {this.props.type === "PLACE" && (
+            {this.props.type === "PLACE" && (
               <CardItem>
                 <Button>
                   <Text>Tạo event</Text>
                 </Button>
               </CardItem>
-            )} */}
+            )}
 
             {this.props.type === 'EVENT' ? (
               <CardItem>
-                <Button success
-                  onPress={() => this.props.navigation.navigate('Event', {
+                <Button
+                  onPress={() => this.props.navigation.navigate('Post', {
                   PostId: this.props._id
                     })}
               >
@@ -200,7 +215,7 @@ class PostDetail extends React.Component {
               </CardItem>
             ) : (
                 <CardItem>
-                  <Button success
+                  <Button 
                   style={{marginLeft:-15}}
                   onPress={() => this.props.navigation.navigate('Post', {
                   PostId: this.props._id
@@ -214,7 +229,7 @@ class PostDetail extends React.Component {
 
             {this.props.type === "EVENT" && (
               <CardItem>
-                <Button primary
+                <Button
                 // onPress={this.togglePayment}
                 >
                   <Text>Quyên góp</Text>
@@ -234,5 +249,5 @@ class PostDetail extends React.Component {
 
 const mapStateToProps = ({ auth: { user } }) => ({ myUser: user });
 
-export default connect(mapStateToProps)(PostDetail);
+export default connect(mapStateToProps)(EventDetail);
 

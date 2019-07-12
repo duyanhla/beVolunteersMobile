@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { getSpecificPost } from '../../services/post.service';
+import { getSpecificEvents, getSpecificPost } from '../../services/post.service';
 import {
   Container,
   Header,
@@ -13,12 +13,13 @@ import {
   Left, 
   Body,
   Right,
-  Input,
-  Item
+  Item,
+  Input
 } from 'native-base';
-import { View, Image,Dimensions, BackHandler } from 'react-native';
+import { View, Image,Dimensions } from 'react-native';
 import { connect } from 'react-redux';
-import PostHeader from './PostHeader';
+import PostHeader from '../post/PostHeader';
+import format from 'date-fns/format';
 import { CardSection, Spinner } from '../common';
 
 const windowWidth = Dimensions.get('window').width;
@@ -26,17 +27,16 @@ const margin = 20;
 const imgInterval = 5;
 
 
-class PostSection extends Component {
+class EventSection extends Component {
   
     state = {
-        post: undefined,
-        loading: true,
-        doubleBackToExitPressedOnce: false,
+        event: undefined,
+        loading:true
     }
 
-    constructor(props){
-    super(props);
-  }
+    checkJoinEvent = (_id, _ids) => {
+      return _ids.find(i => i._id === _id);
+    };
 
   componentWillMount() {
     const { navigation } = this.props;
@@ -48,63 +48,49 @@ class PostSection extends Component {
    
   }
   componentDidMount() {
+   
+    //Here is the Trick
     const { navigation } = this.props;
-    //Adding an event listner on focus
+    //Adding an event listner om focus
     //So whenever the screen will have focus it will set the state to zero
     this.focusListener = navigation.addListener('didFocus', () => {
       this.getPost();
     });
-    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-
   }
   componentWillUnmount() {
     // Remove the event listener before removing the screen from the stack
     this.focusListener.remove();
-    this.backHandler.remove()
-  }
-
-  handleBackPress = () => {
-    if (this.state.doubleBackToExitPressedOnce) {
-      BackHandler.exitApp();
-    }
-    else if (this.props.navigation.state.routeName === 'Home') {
-      this.scrollListReftop.scrollTo({x: 0, y: 0, animated: true})
-      this.setState({ doubleBackToExitPressedOnce: true });
-      // BackHandler.exitApp();
-      setTimeout(() => {
-        this.setState({ doubleBackToExitPressedOnce: false });
-      }, 2000);
-      return true;
-    }
-    else {
-      this.props.navigation.goBack()    
-      return true;
-    }
+   
   }
 
   async getPost()
   {
     const { navigation } = this.props;
+     
     let PostId = navigation.getParam('PostId', 'NO-ID');
-       try {
-           const data = await getSpecificPost(PostId);
-           this.setState({ post: data, loading: false });
-
-       } catch {
-          this.setState({ post: false });
-       }
+      try {
+          const  data  = await getSpecificEvents(PostId);
+          this.setState({ event: data.data.event,loading:false });
+      } catch {
+          this.setState({ event: false });
+      }
+  }
+    
+    constructor(props){
+      super(props);
   }
   render() {
-    if (this.state.post === false) {
+
+    if (this.state.event === false) {
       // return <Text>aa </Text>
     }
-    if (this.state.post !== undefined) {
+    if (this.state.event !== undefined) {
       return (
           <Container>
            <Header searchBar rounded style={{ elevation: 0, backgroundColor: '#004916' }}>
           <Left style={{ flex: 0, alignContent: 'flex-start' }}>
             <Icon
-              onPress={() => this.props.navigation.goBack() }
+              onPress={() => this.props.navigation.goBack()}
               name='arrow-back'
               style={{ color: 'white' }} />
           </Left>
@@ -118,25 +104,41 @@ class PostSection extends Component {
             <Icon name="md-notifications" style={{ color: 'white' }} />
           </Right>
         </Header>
-         {this.state.loading === true? (
+
+        {this.state.loading === true? (
            <CardSection>
              <Spinner />
            </CardSection>
-         ) : 
-         (
+         ) : (
           <Content>
             <Card style={{ flex: 0 }}>
               <PostHeader
-                {...this.state.post.data.post}
+                {...this.state.event}
+                user={this.state.event.publisher}
                 // successReport={this.props.successReport}
                 // reporter={this.props.myUser._id}
-                object={this.state.post.data.post._id}
-                objectModel={this.state.post.data.post.type}
+                object={this.state.event._id}
+                objectModel={this.state.event.type}
               />
+              <Text>Thời gian: </Text>
+              <View style={{ flex:1 ,flexDirection:'row'}}>
+              <Text>
+                 Từ {format(new Date(this.state.event.starttime), "DD/MM/YYYY")}
+              </Text>
+              <Text>  </Text>
+              <Text>
+                 Đến {format(new Date(this.state.event.endtime), "DD/MM/YYYY")}
+              </Text>
+              </View>
+              <Text>Số lượng: </Text>
+              <Text>
+                {this.state.event.volunteers.length}/
+                        {this.state.event.numVolunteers} Tình nguyện viên
+              </Text>
 
               <CardItem >
                 <Body>
-                  <Image source={{ uri: 'http://172.105.113.23:3000/resources/' + this.state.post.data.post.filenames[0] }}
+                  <Image source={{ uri: 'http://172.105.113.23:3000/resources/' + this.state.event.filenames[0] }}
                     style={{
                       width: (windowWidth),
                       height: (windowWidth),
@@ -146,14 +148,14 @@ class PostSection extends Component {
 
                     }} />
                   <Text>
-                    {this.state.post.data.post.description}
+                    {this.state.event.description}
                   </Text>
                 </Body>
               </CardItem>
 
             </Card>
           </Content>
-         )}
+          )}
           </Container>
       );
     }
@@ -164,4 +166,4 @@ class PostSection extends Component {
 
 const mapStateToProps = ({ auth: { user } }) => ({ myUser: user });
 
-export default connect(mapStateToProps)(PostSection);
+export default connect(mapStateToProps)(EventSection);

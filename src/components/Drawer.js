@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, StatusBar } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { 
   createDrawerNavigator, 
   createAppContainer,
@@ -7,27 +7,37 @@ import {
   DrawerActions
 } from 'react-navigation';
 import { Container } from 'native-base';
-
-import EmployeeForm from './EmployeeForm';
-import EmployeeList from './EmployeeList';
 import DrawerContent from './DrawerContent';
 import HomeScreen from './HomePage';
 import PostSection from './post/PostSection';
-
+import LoginForm from './LoginForm';
+import EventSection from './event/EventSection';
+import Userscreen from './profile/Userscreen';
+import CheckAttendance from './attendance/CheckAttendance';
+import NewPost from './post/NewPost';
 
 const DrawerNav = createDrawerNavigator(
   {
     Home: {
       screen: HomeScreen,
     },
-    Hello: {
-      screen: EmployeeForm,
-    },
     Login: {
-      screen: EmployeeList,
+      screen: LoginForm,
+    },
+    Profile: {
+      screen: Userscreen,
     },
     Post: {
       screen: PostSection
+    },
+    Event: {
+      screen: EventSection
+    },
+    Attendance: {
+      screen: CheckAttendance
+    },
+    NewPost: {
+      screen: NewPost
     }
   },
 
@@ -40,6 +50,7 @@ const DrawerNav = createDrawerNavigator(
     drawerToggleRoute: 'DrawerToggle',
     contentOptions: {
     activeTintColor: '#e91e63',
+    backBehavior: 'none',
     },
   }
   );
@@ -47,7 +58,7 @@ const DrawerNav = createDrawerNavigator(
 const MyDrawer = createAppContainer(DrawerNav);
 
 class Drawer extends React.Component{
-  
+
   constructor(props) {
     super(props);
   }

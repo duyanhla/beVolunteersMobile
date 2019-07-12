@@ -1,6 +1,23 @@
 import Axios from "axios";
 import request from './request'
 import {AsyncStorage} from 'react-native';
+import { Alert } from 'react-native';
+
+
+export function createUser(params) {
+  return request({
+    url: `/accounts`,
+    method: 'post',
+    data: {...params}
+  }).then(response => { 
+    Alert.alert("Thành công")
+  })
+  .catch(error => {
+    Alert.alert("Lỗi")
+  });
+
+}
+
 
 export function getAllUsers(q) {
   if(q){

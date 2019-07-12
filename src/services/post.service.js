@@ -15,10 +15,10 @@ export function deletePost(id) {
       url: `/posts/`+id,
       method: 'delete',
     }).then(response => { 
-      Alert.success("Xóa thành công")
+      Alert.alert("Xóa thành công")
     })
     .catch(error => {
-      Alert.error("Xóa thất bại")
+      Alert.alert("Xóa thất bại")
     });
   }
 export function updateImage(id, image) {
@@ -45,10 +45,10 @@ export function reportPost(data) {
         method: 'post',
         data: data
     }).then(response => { 
-      Alert.success("Báo cáo bài viết thành công")
+      Alert.alert("Báo cáo bài viết thành công")
       })
       .catch(error => {
-        Alert.error("Báo cáo bài viết thất bại")
+        Alert.alert("Báo cáo bài viết thất bại")
       });
 }
 

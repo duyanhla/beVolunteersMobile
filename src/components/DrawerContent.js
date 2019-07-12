@@ -5,6 +5,7 @@ import { View, StyleSheet, Image } from 'react-native'
 import { Button,Container,Header,Left,Right,Icon,Text, Body } from 'native-base';
 import { connect } from "react-redux";
 import * as userActions from "../actions/UserAction";
+import * as authActions from '../actions/AuthActions';
 var permissionArr = { USER: "Cá nhân", ORG: "Tổ chức" };
 
 
@@ -26,9 +27,16 @@ class drawerContentComponents extends Component {
           routeName: route
       });
       this.props.navigation.dispatch(navigateAction);
-  })
+    })
 
-  
+  log_out = () => {
+    authActions.logOutUser();
+    this.props.navigation.navigate('Login');
+  };
+
+ 
+ 
+
   render() {
     return (
       <View style={styles.container}>
@@ -49,17 +57,20 @@ class drawerContentComponents extends Component {
           </View>
 
           <View style={[styles.screenStyle, (this.props.activeItemKey == 'Profile') ? styles.activeBackgroundColor : null]}>
-            <Icon name="md-camera" style={{ color: 'black', marginLeft: 10 }} />
-            <Text style={[styles.screenTextStyle, (this.props.activeItemKey == 'ScreenA') ? styles.selectedTextStyle : null]} onPress={this.navigateToScreen('Post')}>Tho</Text>
+            <Icon name="md-person" style={{ color: 'black', marginLeft: 10 }} />
+            <Text style={[styles.screenTextStyle, (this.props.activeItemKey == 'ScreenA') ? styles.selectedTextStyle : null]} onPress={this.navigateToScreen('Profile')}>Thông tin cá nhân</Text>
           </View>
 
           <View style={[styles.screenStyle, (this.props.activeItemKey == 'ScreenB') ? styles.activeBackgroundColor : null]}>
-            <Text style={[styles.screenTextStyle, (this.props.activeItemKey == 'ScreenB') ? styles.selectedTextStyle : null]} onPress={this.navigateToScreen('Post')}>Screen B</Text>
+            <Icon name="md-time" style={{ color: 'black', marginLeft: 10 }} />
+            <Text style={[styles.screenTextStyle, (this.props.activeItemKey == 'ScreenB') ? styles.selectedTextStyle : null]} onPress={this.navigateToScreen('Attendance')}>Điểm danh</Text>
           </View>
 
-          {/* <View style={[styles.screenStyle, (this.props.activeItemKey=='ScreenC') ? styles.activeBackgroundColor : null]}>
-                    <Text style={[styles.screenTextStyle, (this.props.activeItemKey=='ScreenC') ? styles.selectedTextStyle : null]} onPress={this.navigateToScreen('ScreenC')}>Screen C</Text>
-                </View> */}
+          <View style={[styles.screenStyle, (this.props.activeItemKey == 'ScreenC') ? styles.activeBackgroundColor : null]}>
+            <Icon name="logout" type="MaterialCommunityIcons" style={{ color: 'black', marginLeft: 10 }} />
+            <Text style={[styles.screenTextStyle, (this.props.activeItemKey == 'Screen') ? styles.selectedTextStyle : null]} onPress={this.log_out.bind(this)}>Đăng xuất</Text>
+          </View>
+
         </View>
       </View>
     )
@@ -82,7 +93,8 @@ const styles = StyleSheet.create({
   },
   avatarStyle: {
     width: 70,
-    height: 70
+    height: 70,
+    borderRadius: 400/ 2
   },
   screenStyle: {
     height: 50,
