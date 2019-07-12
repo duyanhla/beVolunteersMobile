@@ -5,19 +5,17 @@ import Drawer from './components/Drawer';
 import Comment from './components/post/Comment';
 import PostSection from './components/post/PostSection';
 import HomePage from './components/HomePage';
-
+import Userscreen from './components/profile/Userscreen';
 
 const RouterComponent = () => {
   return (
-    <Router backAndroidHandler={() => (false)}>
+    <Router backAndroidHandler={() => {}}>
       <Scene key="root" hideNavBar >
         <Scene key="auth"  >
           <Scene key="login" component={LoginForm} hideNavBar/>
           </Scene>
         <Scene key="main" hideNavBar back drawerLockMode='locked-closed' >
-        <Scene  key="drawer" component={Drawer} title="h" hideNavBar  
-         />
-         <Scene key="home" component ={HomePage} hideNavBar initial />
+        <Scene  key="drawer" component={Drawer} hideNavBar  />
         </Scene> 
 
       </Scene>

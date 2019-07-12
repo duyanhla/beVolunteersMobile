@@ -3,8 +3,6 @@ import { StyleSheet } from 'react-native';
 import { 
   createDrawerNavigator, 
   createAppContainer,
-  NavigationActions,
-  DrawerActions
 } from 'react-navigation';
 import { Container } from 'native-base';
 import DrawerContent from './DrawerContent';
@@ -50,7 +48,7 @@ const DrawerNav = createDrawerNavigator(
     drawerToggleRoute: 'DrawerToggle',
     contentOptions: {
     activeTintColor: '#e91e63',
-    backBehavior: 'none',
+    backBehavior: 'back',
     },
   }
   );
@@ -63,6 +61,7 @@ class Drawer extends React.Component{
     super(props);
   }
   render(){
+    console.log(this.props)
     return(
       
       <Container>

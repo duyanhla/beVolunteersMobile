@@ -16,7 +16,7 @@ import {
   Input,
   Item
 } from 'native-base';
-import { View, Image,Dimensions, BackHandler } from 'react-native';
+import { View, Image,Dimensions } from 'react-native';
 import { connect } from 'react-redux';
 import PostHeader from './PostHeader';
 import { CardSection, Spinner } from '../common';
@@ -31,8 +31,8 @@ class PostSection extends Component {
     state = {
         post: undefined,
         loading: true,
-        doubleBackToExitPressedOnce: false,
     }
+
 
     constructor(props){
     super(props);
@@ -48,38 +48,19 @@ class PostSection extends Component {
    
   }
   componentDidMount() {
+   
+    //Here is the Trick
     const { navigation } = this.props;
-    //Adding an event listner on focus
+    //Adding an event listner om focus
     //So whenever the screen will have focus it will set the state to zero
     this.focusListener = navigation.addListener('didFocus', () => {
       this.getPost();
     });
-    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-
   }
   componentWillUnmount() {
     // Remove the event listener before removing the screen from the stack
     this.focusListener.remove();
-    this.backHandler.remove()
-  }
-
-  handleBackPress = () => {
-    if (this.state.doubleBackToExitPressedOnce) {
-      BackHandler.exitApp();
-    }
-    else if (this.props.navigation.state.routeName === 'Home') {
-      this.scrollListReftop.scrollTo({x: 0, y: 0, animated: true})
-      this.setState({ doubleBackToExitPressedOnce: true });
-      // BackHandler.exitApp();
-      setTimeout(() => {
-        this.setState({ doubleBackToExitPressedOnce: false });
-      }, 2000);
-      return true;
-    }
-    else {
-      this.props.navigation.goBack()    
-      return true;
-    }
+   
   }
 
   async getPost()

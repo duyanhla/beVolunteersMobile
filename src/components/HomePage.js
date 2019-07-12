@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { NavigationActions } from 'react-navigation';
-import { View, ScrollView, StyleSheet, TouchableOpacity, Image, BackHandler } from 'react-native';
+import { NavigationActions, DrawerActions } from 'react-navigation';
+import { View, ScrollView, StyleSheet, TouchableOpacity, Image, BackHandler, RefreshControl  } from 'react-native';
 import { Input,Item,Container,Header,Left,Right,Icon,Text, CardItem, Thumbnail, Body } from 'native-base';
 import { joinEvent, unjoinEvent } from '../services/event.service';
 import { connect } from 'react-redux';
@@ -8,25 +8,42 @@ import { getNewfeed } from "../services/newsfeed";
 import Post from './post/PostDetail';
 import Drawer from './Drawer';
  class HomeScreen extends Component {
+  _didFocusSubscription;
+  _willBlurSubscription;
+
   state = {
     data: [],
     update: false,
     doubleBackToExitPressedOnce: false,
+    refreshing: true,
   };
 
-  componentDidMount = () => {
+  constructor(props) {
+    super(props);
+    this._didFocusSubscription = props.navigation.addListener('didFocus', payload =>
+      BackHandler.addEventListener('hardwareBackPress', this.handleBackPress)
+    );
+  }
+
+
+  componentDidMount() {
     getNewfeed(0)
       .then(data => {
-        this.setState(data);
+        this.setState(data );
+        this.setState({refreshing:false})
       })
       .catch(e => console.log(e));
-    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+      this._willBlurSubscription = this.props.navigation.addListener('willBlur', payload =>
+      BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
+    );
 
   };
 
   componentWillUnmount() {
-    this.backHandler.remove();
+    this._didFocusSubscription && this._didFocusSubscription.remove();
+    this._willBlurSubscription && this._willBlurSubscription.remove();
   }
+
   handleBackPress = () => {
     if (this.state.doubleBackToExitPressedOnce) {
       BackHandler.exitApp();
@@ -40,12 +57,18 @@ import Drawer from './Drawer';
       }, 2000);
       return true;
     }
-    else {
-      this.props.navigation.goBack(null)    
-      return true;
-    }
   }
-
+  onRefresh () {
+     //Clear old data of the list
+     this.setState({ data: [], refreshing:true });
+     //Call the Service to get the latest data
+     getNewfeed(0)
+     .then(data => {
+       this.setState(data);
+       this.setState({refreshing:false})
+     })
+     .catch(e => console.log(e));
+  }
   onPostTypeChanged = async postType => {
     const data = await getNewfeed(postType)
 
@@ -102,10 +125,15 @@ import Drawer from './Drawer';
   })
 
   render() {
-    console.log(this.props.navigation.state.routeName)
+     console.log(this.props)
     return (
       <Container>
       <ScrollView
+       refreshControl={
+        <RefreshControl
+          refreshing={this.state.refreshing}
+          onRefresh={this.onRefresh.bind(this)}
+        />}
         onPostTypeChanged={this.onPostTypeChanged}
         stickyHeaderIndices={[0]}
         ref={(ref) => { this.scrollListReftop = ref; }}

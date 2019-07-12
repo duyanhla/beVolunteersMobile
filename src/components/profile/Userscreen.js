@@ -34,41 +34,11 @@ const IMAGE_SIZE = SCREEN_WIDTH - 80;
 
 
 class Userscreen extends Component {
-  state = {
-    doubleBackToExitPressedOnce: false,
-  };
-
-  componentDidMount() {
-    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-  }
-
-  componentWillUnmount() {
-    this.backHandler.remove()
-  }
-
-  handleBackPress = () => {
-    if (this.state.doubleBackToExitPressedOnce) {
-      BackHandler.exitApp();
-    }
-    else if (this.props.navigation.state.routeName === 'Home') {
-      this.scrollListReftop.scrollTo({x: 0, y: 0, animated: true})
-      this.setState({ doubleBackToExitPressedOnce: true });
-      // BackHandler.exitApp();
-      setTimeout(() => {
-        this.setState({ doubleBackToExitPressedOnce: false });
-      }, 2000);
-      return true;
-    }
-    else {
-      this.props.navigation.goBack(null)    
-      return true;
-    }
-  }
 
   render() {
     return (
       <Container>
-        
+          
         <Header searchBar rounded style={{ elevation: 0, backgroundColor: '#004916' }}>
           <Left style={{ flex: 0, alignContent: 'flex-start' }}>
             <Icon
