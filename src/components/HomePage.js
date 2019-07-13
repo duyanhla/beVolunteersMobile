@@ -125,7 +125,6 @@ class HomeScreen extends Component {
     })
 
   render() {
-    console.log(this.props)
     return (
       <Container>
       <ScrollView

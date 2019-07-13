@@ -23,9 +23,7 @@ export function deletePost(id) {
   }
 export function updateImage(id, image) {
     const formData = new FormData();
-            for (let i = 0; i < image.length; i++) {
-                formData.append('resources', image[i]);
-    }
+            formData.append('resources', image);
     return request({
         url: `posts/${id}/resources`,
         method: 'put',
