@@ -7,7 +7,6 @@ import {
   Image,
   ScrollView,
   Dimensions,
-  BackHandler,
 } from 'react-native';
 import {
   Container,
@@ -23,7 +22,8 @@ import {
   Right,
   Item,
   Input,
-  Text
+  Text,
+  Title
 } from 'native-base';
 import { CardSection } from '../common';
 import format from 'date-fns/format';
@@ -47,10 +47,9 @@ class Userscreen extends Component {
               style={{ color: 'white' }} />
           </Left>
 
-          <Item style={{ marginLeft: 15, marginRight: 15 }}>
-            <Icon name="ios-search" />
-            <Input placeholder="Tìm kiếm" />
-          </Item>
+          <Body style={{ marginLeft: 15, marginRight: 15 }}>
+            <Title>{this.props.user.name}</Title>
+          </Body>
 
           <Right style={{ flex: 0 }}>
             <Icon name="md-notifications" style={{ color: 'white' }} />
@@ -73,23 +72,29 @@ class Userscreen extends Component {
             color: 'green'
           }}>{this.props.user.name} </Text>
 
-          <CardSection>
-            <Icon
-              name="check-circle"
-              type='FontAwesome'
-              size={25}
-              style={{ color: 'green',marginLeft:80 }}
-            />
+         
           {this.props.user.isVerified === true ? (
+             <CardSection>
+             <Icon
+               name="check-circle"
+               type='FontAwesome'
+               size={25}
+               style={{ color: 'green',marginLeft:80 }}
+             />
             <Text>
               Tài khoản - Đã được xác thực
                 </Text>
+            </CardSection>
+
           ) : (
-              <Text>
+            <CardSection>
+
+              <Text style={{ marginLeft:100 }} >
                 Tài khoản -Chưa được xác thực
               </Text>
-            )}
             </CardSection>
+
+            )}
 
             <CardSection style={{ marginTop: 20 }}>
             <Icon
