@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { NavigationActions, DrawerActions } from 'react-navigation';
-import { View, ScrollView, StyleSheet, TouchableOpacity, Image, BackHandler, RefreshControl  } from 'react-native';
-import { Input,Item,Container,Header,Left,Right,Icon,Text, CardItem, Thumbnail, Body } from 'native-base';
+import { View, ScrollView, StyleSheet, TouchableOpacity, Image, BackHandler, RefreshControl } from 'react-native';
+import { Input, Item, Container, Header, Left, Right, Icon, Text, CardItem, Thumbnail, Body } from 'native-base';
 import { joinEvent, unjoinEvent } from '../services/event.service';
 import { connect } from 'react-redux';
 import { getNewfeed } from "../services/newsfeed";
 import Post from './post/PostDetail';
 import Drawer from './Drawer';
- class HomeScreen extends Component {
+class HomeScreen extends Component {
   _didFocusSubscription;
   _willBlurSubscription;
 
@@ -29,11 +29,11 @@ import Drawer from './Drawer';
   componentDidMount() {
     getNewfeed(0)
       .then(data => {
-        this.setState(data );
-        this.setState({refreshing:false})
+        this.setState(data);
+        this.setState({ refreshing: false })
       })
       .catch(e => console.log(e));
-      this._willBlurSubscription = this.props.navigation.addListener('willBlur', payload =>
+    this._willBlurSubscription = this.props.navigation.addListener('willBlur', payload =>
       BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
     );
 
@@ -49,7 +49,7 @@ import Drawer from './Drawer';
       BackHandler.exitApp();
     }
     else if (this.props.navigation.state.routeName === 'Home') {
-      this.scrollListReftop.scrollTo({x: 0, y: 0, animated: true})
+      this.scrollListReftop.scrollTo({ x: 0, y: 0, animated: true })
       this.setState({ doubleBackToExitPressedOnce: true });
       // BackHandler.exitApp();
       setTimeout(() => {
@@ -58,32 +58,32 @@ import Drawer from './Drawer';
       return true;
     }
   }
-  onRefresh () {
-     //Clear old data of the list
-     this.setState({ data: [], refreshing:true });
-     //Call the Service to get the latest data
-     getNewfeed(0)
-     .then(data => {
-       this.setState(data);
-       this.setState({refreshing:false})
-     })
-     .catch(e => console.log(e));
+  onRefresh() {
+    //Clear old data of the list
+    this.setState({ data: [], refreshing: true });
+    //Call the Service to get the latest data
+    getNewfeed(0)
+      .then(data => {
+        this.setState(data);
+        this.setState({ refreshing: false })
+      })
+      .catch(e => console.log(e));
   }
   onPostTypeChanged = async postType => {
     const data = await getNewfeed(postType)
 
-    if(postType!=="ALL"){
+    if (postType !== "ALL") {
       console.log(postType)
       this.setState({
         data: data.data.filter(
           d => d.type === postType
         )
       });
-    }else{
-      this.setState({data:data.data})
+    } else {
+      this.setState({ data: data.data })
     }
-  
-     
+
+
   };
 
   // successReport(reporter, object, objectModel, content) {
@@ -113,73 +113,78 @@ import Drawer from './Drawer';
   };
 
   clickHandler = () => {
-    {this.navigateToScreen('NewPost')}
+    { this.navigateToScreen('NewPost') }
   };
 
-  navigateToScreen = ( route ) =>(
+  navigateToScreen = (route) => (
     () => {
-    const navigateAction = NavigationActions.navigate({
+      const navigateAction = NavigationActions.navigate({
         routeName: route
-    });
-    this.props.navigation.dispatch(navigateAction);
-  })
+      });
+      this.props.navigation.dispatch(navigateAction);
+    })
 
   render() {
-     console.log(this.props)
+    console.log(this.props)
     return (
       <Container>
       <ScrollView
-       refreshControl={
-        <RefreshControl
-          refreshing={this.state.refreshing}
-          onRefresh={this.onRefresh.bind(this)}
-        />}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this.onRefresh.bind(this)}
+          />}
         onPostTypeChanged={this.onPostTypeChanged}
         stickyHeaderIndices={[0]}
         ref={(ref) => { this.scrollListReftop = ref; }}
       >
 
+        <View>
 
-        <Header  searchBar rounded style={{ elevation: 0, backgroundColor: '#004916'}}>
-          <Left style={{ flex: 0, alignContent: 'flex-start' }}>
-            <Icon onPress={() => this.props.navigation.openDrawer()} name="md-menu" style={{ color: 'white', marginRight: 15 }} />
-          </Left>
+          <Header searchBar rounded style={{ elevation: 0, backgroundColor: '#004916' }}>
+            <Left style={{ flex: 0, alignContent: 'flex-start' }}>
+              <Icon onPress={() => this.props.navigation.openDrawer()} name="md-menu" style={{ color: 'white', marginRight: 15 }} />
+            </Left>
 
-          <Item style={{ marginLeft: 15, marginRight: 15 }}>
-            <Icon name="ios-search" />
-            <Input placeholder="Tìm kiếm" />
-          </Item>
+            <Item style={{ marginLeft: 15, marginRight: 15 }}>
+              <Icon name="ios-search" />
+              <Input placeholder="Tìm kiếm" />
+            </Item>
 
-          <Right style={{ flex: 0 }}>
-            <Icon name="md-notifications" style={{ color: 'white' }} />
-          </Right>
-        </Header>
-
-        {this.state.data.map(post => (
-          <Post
-            key={post._id}
-            {...post}
-            joinToEvent={this.joinToEvent}
-            unjoinEvent={this.unjoinEvent}
-            navigation={this.props.navigation}
-          />
-        ))}
-       
+            <Right style={{ flex: 0 }}>
+              <Icon name="md-notifications" style={{ color: 'white' }} />
+            </Right>
+          </Header>
+          
+          </View>
+          
+          {this.state.data.map(post => (
+            <Post
+              key={post._id}
+              {...post}
+              joinToEvent={this.joinToEvent}
+              unjoinEvent={this.unjoinEvent}
+              navigation={this.props.navigation}
+            />
+          ))}
+      
+  
       </ScrollView>
-       <TouchableOpacity
-       activeOpacity={0.7}
-       onPress={this.navigateToScreen('NewPost')}
-       style={styles.TouchableOpacityStyle}>
-       <Image
-         //We are making FAB using TouchableOpacity with an image
-         //We are using online image here
-         source={require('../../assets/images/addicon.png')}
-         //You can use you project image Example below
-         //source={require('./images/float-add-icon.png')}
-         style={styles.FloatingButtonStyle}
-       />
-   </TouchableOpacity>
-      </Container>
+  <TouchableOpacity
+  activeOpacity={0.7}
+  onPress={this.navigateToScreen('NewPost')}
+  style={styles.TouchableOpacityStyle}>
+  <Image
+    //We are making FAB using TouchableOpacity with an image
+    //We are using online image here
+    source={require('../../assets/images/addicon.png')}
+    //You can use you project image Example below
+    //source={require('./images/float-add-icon.png')}
+    style={styles.FloatingButtonStyle}
+  />
+  
+</TouchableOpacity>
+</Container>
     );
   }
 }
@@ -195,7 +200,7 @@ const styles = StyleSheet.create({
     right: 30,
     bottom: 30,
   },
- 
+
   FloatingButtonStyle: {
     resizeMode: 'contain',
     width: 50,

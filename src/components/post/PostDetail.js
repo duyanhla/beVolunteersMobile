@@ -144,7 +144,7 @@ class PostDetail extends React.Component {
                 marginRight: imgInterval,
                 
               }} />
-              <Text>
+              <Text numberOfLines={3} ellipsizeMode="tail">
                 {this.props.description}
               </Text>
             </Body>

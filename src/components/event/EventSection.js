@@ -14,7 +14,8 @@ import {
   Body,
   Right,
   Item,
-  Input
+  Input,
+  Title
 } from 'native-base';
 import { View, Image,Dimensions } from 'react-native';
 import { connect } from 'react-redux';
@@ -80,7 +81,6 @@ class EventSection extends Component {
       super(props);
   }
   render() {
-
     if (this.state.event === false) {
       // return <Text>aa </Text>
     }
@@ -95,10 +95,9 @@ class EventSection extends Component {
               style={{ color: 'white' }} />
           </Left>
 
-          <Item style={{ marginLeft: 15, marginRight: 15 }}>
-            <Icon name="ios-search" />
-            <Input placeholder="Tìm kiếm" />
-          </Item>
+          <Body style={{ marginLeft: 15, marginRight: 15 }}>
+              <Title>{this.state.event.publisher.name} </Title>
+          </Body>
 
           <Right style={{ flex: 0 }}>
             <Icon name="md-notifications" style={{ color: 'white' }} />

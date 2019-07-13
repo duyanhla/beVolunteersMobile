@@ -14,7 +14,7 @@ import {
   Body,
   Right,
   Input,
-  Item
+  Item, Title
 } from 'native-base';
 import { View, Image,Dimensions } from 'react-native';
 import { connect } from 'react-redux';
@@ -90,10 +90,9 @@ class PostSection extends Component {
               style={{ color: 'white' }} />
           </Left>
 
-          <Item style={{ marginLeft: 15, marginRight: 15 }}>
-            <Icon name="ios-search" />
-            <Input placeholder="Tìm kiếm" />
-          </Item>
+          <Body style={{ marginLeft: 15, marginRight: 15 }}>
+              <Title>{this.state.post.data.post.user.name} </Title>
+          </Body>
 
           <Right style={{ flex: 0 }}>
             <Icon name="md-notifications" style={{ color: 'white' }} />

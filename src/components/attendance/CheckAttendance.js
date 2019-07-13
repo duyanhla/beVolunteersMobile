@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { Input,Item,Container,Header,Left,Right,Icon,Text, CardItem, Thumbnail, Body } from 'native-base';
+import {
+  Input, Item, Container, Header, Left,
+  Right, Icon, Text, CardItem, Thumbnail, Body, Title
+} from 'native-base';
 import { connect } from 'react-redux';
 import { getEventJoined } from "../../services/event.service";
 import Post from './AttendanceDetail';
 
 
- class HomeScreen extends Component {
+class HomeScreen extends Component {
   state = {
     data: [],
   };
@@ -14,7 +17,7 @@ import Post from './AttendanceDetail';
   componentDidMount = () => {
     getEventJoined(this.props.username)
       .then(data => {
- 
+
         this.setState({ data: data.data });
         console.log(data)
       })
@@ -22,29 +25,12 @@ import Post from './AttendanceDetail';
   };
 
 
-  successCheckin(eventId, date, code){
+  successCheckin(eventId, date, code) {
     console.log(eventId)
     console.log(new Date(date))
     console.log(code)
-  
+
   }
-
-  onPostTypeChanged = async postType => {
-    const data = await getNewfeed(postType)
-
-    if(postType!=="ALL"){
-      console.log(postType)
-      this.setState({
-        data: data.data.filter(
-          d => d.type === postType
-        )
-      });
-    }else{
-      this.setState({data:data.data})
-    }
-  
-     
-  };
 
   // successReport(reporter, object, objectModel, content) {
   //   const data = {
@@ -63,31 +49,32 @@ import Post from './AttendanceDetail';
         onPostTypeChanged={this.onPostTypeChanged}
         stickyHeaderIndices={[0]}
       >
+        <Container>
 
+          <Header searchBar rounded style={{ elevation: 0, backgroundColor: '#004916' }}>
+            <Left style={{ flex: 0, alignContent: 'flex-start' }}>
+              <Icon
+                onPress={() => this.props.navigation.goBack()}
+                name='arrow-back'
+                style={{ color: 'white' }} />
+            </Left>
+            <Body style={{ marginLeft: 15, marginRight: 15 }}>
+              <Title>Điểm danh</Title>
+            </Body>
 
-        <Header  searchBar rounded style={{ elevation: 0, backgroundColor: '#004916'}}>
-          <Left style={{ flex: 0, alignContent: 'flex-start' }}>
-            <Icon onPress={() => this.props.navigation.openDrawer()} name="md-menu" style={{ color: 'white', marginRight: 15 }} />
-          </Left>
+            <Right style={{ flex: 0 }}>
+              <Icon name="md-notifications" style={{ color: 'white' }} />
+            </Right>
+          </Header>
 
-          <Item style={{ marginLeft: 15, marginRight: 15 }}>
-            <Icon name="ios-search" />
-            <Input placeholder="Tìm kiếm" />
-          </Item>
-
-          <Right style={{ flex: 0 }}>
-            <Icon name="md-notifications" style={{ color: 'white' }} />
-          </Right>
-        </Header>
-
-        {this.state.data.map(post => (
-          <Post
-            key={post._id}
-            {...post}
-            successCheckin= {this.successCheckin}
-          />
-        ))}
-       
+          {this.state.data.map(post => (
+            <Post
+              key={post._id}
+              {...post}
+              successCheckin={this.successCheckin}
+            />
+          ))}
+        </Container>
       </ScrollView>
     );
   }
@@ -104,7 +91,7 @@ const styles = StyleSheet.create({
     right: 30,
     bottom: 30,
   },
- 
+
   FloatingButtonStyle: {
     resizeMode: 'contain',
     width: 50,
