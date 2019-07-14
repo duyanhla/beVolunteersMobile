@@ -227,7 +227,7 @@ class EventDetail extends React.Component {
               )
             }
 
-            {this.props.type === "EVENT" && (
+            {/* {this.props.type === "EVENT" && (
               <CardItem>
                 <Button
                 // onPress={this.togglePayment}
@@ -235,7 +235,7 @@ class EventDetail extends React.Component {
                   <Text>Quyên góp</Text>
                 </Button>
               </CardItem>
-            )}
+            )} */}
 
 
           </CardItem>
