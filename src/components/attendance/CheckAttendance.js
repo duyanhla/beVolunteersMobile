@@ -1,17 +1,24 @@
 import React, { Component } from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import {
   Input, Item, Container, Header, Left,
   Right, Icon, Text, CardItem, Thumbnail, Body, Title
 } from 'native-base';
 import { connect } from 'react-redux';
-import { getEventJoined } from "../../services/event.service";
+import { 
+  getEventJoined, 
+  CheckinUserByCode,  
+  getCheckinByDateUser,
+ } from "../../services/event.service";
 import Post from './AttendanceDetail';
+import format from "date-fns/format";
 
 
 class HomeScreen extends Component {
   state = {
     data: [],
+    listChecked: [],
+    refreshing: true,
   };
   constructor(props) {
     super(props);
@@ -21,29 +28,51 @@ class HomeScreen extends Component {
       .then(data => {
 
         this.setState({ data: data.data });
-        console.log(data)
+        this.setState({ refreshing: false })
       })
       .catch(e => console.log(e));
   };
 
 
-  successCheckin(eventId, date, code) {
-    console.log(eventId)
-    console.log(new Date(date))
-    console.log(code)
+  onRefresh() {
+    //Clear old data of the list
+    this.setState({ data: [], refreshing: true });
+    //Call the Service to get the latest data
+    getEventJoined(this.props.username)
+    .then(data => {
 
+      this.setState({ data: data.data });
+      this.setState({ refreshing: false })
+    })
+    .catch(e => console.log(e));
   }
 
-  // successReport(reporter, object, objectModel, content) {
-  //   const data = {
-  //     reporter: reporter,
-  //     object: object,
-  //     objectModel: objectModel,
-  //     content: content
-  //   };
-  //   reportPost(data);
-  // }
+  successCheckin = async (eventId,date, code) => {
+    const DateFomart = await format(new Date(date), "YYYY-MM-DD").toString();
+    const checkList = await getCheckinByDateUser(
+      eventId,
+      DateFomart,
+      this.props.username
+    );
+    console.log(DateFomart)
+    if (checkList.data.length !== 0) {
+      // TODO:
+      CheckinUserByCode(eventId, checkList.data[0]._id, code);
+    }
+  };
+  getStatusCheckinToday = async eventId => {
+    const DateFomart = await format(new Date(), "YYYY-MM-DD").toString();
+    const checkList = await getCheckinByDateUser(
+      eventId,
+      DateFomart,
+      this.props.username
+    );
 
+    if (checkList.data.length !== 0) {
+      return checkList.data[0].isPresent;
+    }
+    return false;
+  };
 
   render() {
     console.log(this.props)
@@ -53,9 +82,14 @@ class HomeScreen extends Component {
       <ScrollView
         onPostTypeChanged={this.onPostTypeChanged}
         stickyHeaderIndices={[0]}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this.onRefresh.bind(this)}
+          />}
       >
 
-          <Header searchBar rounded style={{ elevation: 0, backgroundColor: '#004916' }} androidStatusBarColor="#4ab785">
+          <Header searchBar rounded style={{ elevation: 0, backgroundColor: '#4ab785' }} androidStatusBarColor="#4ab785">
             <Left style={{ flex: 0, alignContent: 'flex-start' }}>
               <Icon
                 onPress={() => this.props.navigation.goBack()}
@@ -76,6 +110,7 @@ class HomeScreen extends Component {
               key={post._id}
               {...post}
               successCheckin={this.successCheckin}
+              getStatusCheckinToday={this.getStatusCheckinToday}
             />
           ))}
       </ScrollView>

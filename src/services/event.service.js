@@ -84,9 +84,36 @@ export function unjoinEvent(id) {
 }
 
 export function getEventJoined(username) {
-    return request({
-      url: `/accounts/u/`+username+`/eventsjoin`,
-      method: "get"
-    })
+  return request({
+    url: `/accounts/u/` + username + `/eventsjoin`,
+    method: "get"
+  })
 
-  }
+}
+
+export function CheckinUserByCode(id, idCheckin, code) {
+  return request({
+    url: `/events/` + id + `/attendances/` + idCheckin,
+    method: "put",
+    data: { code: code }
+  }).then(response => {
+    Alert.alert("Điểm danh thành công");
+  })
+  .catch(error => {
+    Alert.alert("Điểm danh thất bại, hãy kiểm tra lại mã");
+  });
+}
+
+export function getAllCheckinUser(id, username) {
+  return request({
+    url: `/events/` + id + `/attendances/` + username,
+    method: "get"
+  });
+}
+
+export function getCheckinByDateUser(id, date, username) {
+  return request({
+    url: `/events/` + id + `/attendances/` + username + `?date=` + date,
+    method: "get"
+  });
+}                 
