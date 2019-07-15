@@ -50,11 +50,14 @@ class LoginForm extends Component {
     username: "",
     password: "",
     rePassword:"",
-    email: "a@gmail.com",
+    email: "",
     selected2: undefined,
     userData: {}
   };
 
+  componentWillMount() {
+    this.getToken();
+  }
   componentDidMount() {
     this.backHandler = BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
   }
@@ -102,6 +105,8 @@ class LoginForm extends Component {
     try {
       if (this.state.password === this.state.rePassword){
         const data = await createUser({ ...this.state }).then(response => { 
+          Alert.alert("Hãy kiểm tra email để xác nhận tài khoản")
+          this.selectCategory(0)
         })
         .catch(error => {
           Alert.alert("Tạo tài khoản thất bại")
@@ -118,7 +123,8 @@ class LoginForm extends Component {
   onButtonPress() {
     const { username, password } = this.props;
     this.props.loginUser({ username, password });
-    // this.setState({ userData: JSON.stringify( res.user) });
+    let user = {'username': this.state.username, 'password': this.state.password};    
+    this.storeToken(user);
   }
 
   selectCategory(number) {
@@ -129,15 +135,20 @@ class LoginForm extends Component {
   async storeToken(user) {
     try {
        await AsyncStorage.setItem("userData", JSON.stringify(user));
+       console.log(user);
     } catch (error) {
       console.log("Something went wrong", error);
     }
   }
-  async getToken(user) {
+  async getToken() {
     try {
       let userData = await AsyncStorage.getItem("userData");
       let data = JSON.parse(userData);
       console.log(data);
+      if (data != null) 
+      {
+        this.props.loginUser(data);
+      }
     } catch (error) {
       console.log("Something went wrong", error);
     }
@@ -177,7 +188,7 @@ class LoginForm extends Component {
                       styles.categoryText,
                       isLoginPage && styles.selectedCategoryText,
                     ]}
-                    title={'Login'}
+                    title={'Đăng nhập'}
                   />
                   <Button
                     disabled={this.props.loading}
@@ -189,7 +200,7 @@ class LoginForm extends Component {
                     styles.categoryText,
                     isSignUpPage && styles.selectedCategoryText,
                   ]}
-                  title={'Sign up'}
+                  title={'Đăng kí'}
                 />
               </View>
               <View style={styles.rowSelector}>
@@ -212,13 +223,13 @@ class LoginForm extends Component {
                     name="username"
                     autoCapitalize="none"
                     keyboardAppearance="light"
-                    autoFocus={false}
+                    autoFocus style={{ flex: 1 }} 
                     containerStyle={{
                       borderBottomColor: 'rgba(0, 0, 0, 0.38)',
                     }}
                     inputStyle={{ marginLeft: 10 }}
                     autoCapitalize="none"
-                    placeholder="username"
+                    placeholder="Tài khoản"
                     onChangeText={this.onUsernameChange.bind(this)}
                     value={this.props.username}
                     onChange={this.onFieldChanged}
@@ -246,7 +257,7 @@ class LoginForm extends Component {
                     inputStyle={{ marginLeft: 4 }}
                     secureTextEntry
                     name="password"
-                    placeholder="password"
+                    placeholder="Mật khẩu"
                     onChangeText={this.onPasswordChange.bind(this)}
                     value={this.props.password}
                     onChange={this.onFieldChanged}
@@ -276,8 +287,8 @@ class LoginForm extends Component {
                           marginTop: 16,
                           borderBottomColor: 'rgba(0, 0, 0, 0.38)',
                         }}
-                        inputStyle={{ marginLeft: 10 }}
-                        placeholder={'Confirm password'}
+                        inputStyle={{ marginLeft: 11 }}
+                        placeholder={'Xác nhận mật khẩu'}
                         name="rePassword"
                         onChangeText={(rePassword) => this.setState({rePassword})}
                         value={this.state.rePassword}
@@ -364,7 +375,7 @@ class LoginForm extends Component {
                     loading={this.props.loading}
                     error={''}
                     activeOpacity={0.8}
-                    title={isLoginPage ? 'LOGIN' : 'SIGN UP'}
+                    title={isLoginPage ? 'Đăng nhập' : 'Đăng ký'}
                   />
                 </CardSection>
                 

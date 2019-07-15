@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { NavigationActions } from 'react-navigation';
 import { View, ScrollView, StyleSheet, TouchableOpacity, Image, BackHandler, RefreshControl } from 'react-native';
-import { Input, Item, Container, Header, Left, Right, Icon } from 'native-base';
+import { Input, Item, Container, Header, Left, Right, Icon, Body, Title } from 'native-base';
 import { joinEvent, unjoinEvent } from '../services/event.service';
 import { connect } from 'react-redux';
 import { getNewfeed } from "../services/newsfeed";
@@ -139,15 +139,17 @@ class HomeScreen extends Component {
 
         <View>
 
-          <Header searchBar rounded style={{ elevation: 0, backgroundColor: '#4ab785' }} androidStatusBarColor="#4ab785">
+          <Header  rounded style={{ elevation: 0, backgroundColor: '#4ab785' }} androidStatusBarColor="#4ab785">
             <Left style={{ flex: 0, alignContent: 'flex-start' }}>
               <Icon onPress={() => this.props.navigation.openDrawer()} name="md-menu" style={{ color: 'white', marginRight: 15 }} />
             </Left>
-
-            <Item style={{ marginLeft: 15, marginRight: 15 }}>
+            <Body style={{ marginLeft: 15, marginRight: 15 }}>
+              <Title>{this.props.name} </Title>
+          </Body>
+            {/* <Item style={{ marginLeft: 15, marginRight: 15 }}>
               <Icon name="ios-search" />
               <Input placeholder="Tìm kiếm" />
-            </Item>
+            </Item> */}
 
             <Right style={{ flex: 0 }}>
               <Icon name="md-notifications" style={{ color: 'white' }} />

@@ -26,18 +26,18 @@ const imgInterval = 5;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const IMAGE_SIZE = SCREEN_WIDTH - 80;
 
+const initialState = {
+  description: "",
+  address: "",
+  imageSource: [],
+  type: "PERSONAL_ACTIVITY",
+  filePath: {},
+  selected: undefined,
+};
 
 class NewPost extends Component {
 
-  state = {
-    description: "",
-    address: "",
-    type: "PERSONAL_ACTIVITY",
-    filePath: {},
-    selected: undefined,
-    imageSource: []
-  }
-
+  state = initialState;
 
     constructor(props){
     super(props);
@@ -93,12 +93,14 @@ class NewPost extends Component {
   onSubmit = e => {
     postServices.createPost(this.state).then(({ data: { _id } }) => {
       postServices.updateImage(_id, this.state.image).then((res) => {
-        // this.setState({ ...initialState });
+        this.setState({ ...initialState });
         Alert.alert('Tạo bài viết thành công.');
+        this.props.navigation.goBack()
       })
       
+    }).catch(error => {
+      Alert.alert("Lỗi, vui lòng nhập đầy đủ thông tin ")
     });
-    this.props.navigation.goBack()
   };
 
   render() {

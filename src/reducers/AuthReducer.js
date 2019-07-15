@@ -5,7 +5,9 @@ import {
   LOGIN_USER_FAIL,
   LOGIN_USER,
   CATEGORY_CHANGED,
-  LOGOUT_USER
+  LOGOUT_USER,
+  GET_ME_SUCCESSFULLY,
+  GET_ME_FAILED,
 } from '../actions/types';
 
 const INITIAL_STATE = { 
@@ -14,7 +16,8 @@ const INITIAL_STATE = {
   user: null,
   error: '',
   loading: false,
-  selectedCategory: 0
+  selectedCategory: 0,
+  isAuthenticated: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -24,15 +27,19 @@ export default (state = INITIAL_STATE, action) => {
     case PASSWORD_CHANGED:
       return { ...state, password: action.payload };
     case LOGIN_USER_SUCCESS:
-      return { ...state, ...INITIAL_STATE, user: action.payload,};
+      return { ...state, ...INITIAL_STATE, user: action.payload, };
     case LOGIN_USER_FAIL:
-      return { ...state, error: 'Thông tin đăng nhập không đúng.', loading: false};
+      return { ...state, error: 'Thông tin đăng nhập không đúng.', loading: false };
     case LOGIN_USER:
       return { ...state, loading: true, error: '' };
     case LOGOUT_USER:
-      return { ...state};
+      return { ...state };
     case CATEGORY_CHANGED:
-      return { ...state, selectedCategory: action.payload, loading: false};
+      return { ...state, selectedCategory: action.payload, loading: false };
+    case GET_ME_SUCCESSFULLY:
+      return { ...state, isAuthenticated: true, user: action.payload };
+    case GET_ME_FAILED:
+      return { ...state, isAuthenticated: false, user: {} };
     default:
       return state;
   }
