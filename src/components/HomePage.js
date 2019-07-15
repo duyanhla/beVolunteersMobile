@@ -140,7 +140,7 @@ class HomeScreen extends Component {
 
         <View>
 
-          <Header searchBar rounded style={{ elevation: 0, backgroundColor: '#004916' }}>
+          <Header searchBar rounded style={{ elevation: 0, backgroundColor: '#4ab785' }} androidStatusBarColor="#4ab785">
             <Left style={{ flex: 0, alignContent: 'flex-start' }}>
               <Icon onPress={() => this.props.navigation.openDrawer()} name="md-menu" style={{ color: 'white', marginRight: 15 }} />
             </Left>

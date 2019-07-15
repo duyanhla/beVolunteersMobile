@@ -11,7 +11,8 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   BackHandler,
-  Alert
+  Alert,
+  AsyncStorage
 } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 import { Card, CardSection, Spinner} from './common';
@@ -55,7 +56,8 @@ class LoginForm extends Component {
     dob: "",
     email: "",
     gender: "Nam",
-    selected2: undefined
+    selected2: undefined,
+    userData: {}
   };
 
   componentDidMount() {
@@ -118,11 +120,29 @@ class LoginForm extends Component {
   onButtonPress() {
     const { username, password } = this.props;
     this.props.loginUser({ username, password });
+    // this.setState({ userData: JSON.stringify( res.user) });
   }
 
   selectCategory(number) {
     LayoutAnimation.easeInEaseOut();
     this.props.categoryChanged(number);
+  }
+
+  async storeToken(user) {
+    try {
+       await AsyncStorage.setItem("userData", JSON.stringify(user));
+    } catch (error) {
+      console.log("Something went wrong", error);
+    }
+  }
+  async getToken(user) {
+    try {
+      let userData = await AsyncStorage.getItem("userData");
+      let data = JSON.parse(userData);
+      console.log(data);
+    } catch (error) {
+      console.log("Something went wrong", error);
+    }
   }
 
   renderButton(isLoginPage) {
@@ -311,117 +331,6 @@ class LoginForm extends Component {
                       />
                     </CardSection>
 
-                    <CardSection>
-                      <Input
-                        leftIcon={
-                          <Icon
-                            name="mail"
-                            type="ion-icon"
-                            color="rgba(0, 0, 0, 0.38)"
-                            size={25}
-                            style={{ backgroundColor: 'transparent' }}
-                          />
-                        }
-                        keyboardAppearance="light"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        keyboardType="email-address"
-                        returnKeyType={'done'}
-                        blurOnSubmit={true}
-                        containerStyle={{
-                          marginTop: 16,
-                          borderBottomColor: 'rgba(0, 0, 0, 0.38)',
-                        }}
-                        inputStyle={{ marginLeft: 10 }}
-                        placeholder={'Email'}
-                        name="email"
-                        onChange={this.onFieldChanged}
-                      />
-                    </CardSection>
-
-                    <CardSection>
-                      <Input
-                        leftIcon={
-                          <Icon
-                            name="phone"
-                            type="ion-icon"
-                            color="rgba(0, 0, 0, 0.38)"
-                            size={25}
-                            style={{ backgroundColor: 'transparent' }}
-                          />
-                        }
-                        keyboardAppearance="light"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        keyboardType="default"
-                        returnKeyType={'done'}
-                        blurOnSubmit={true}
-                        containerStyle={{
-                          marginTop: 16,
-                          borderBottomColor: 'rgba(0, 0, 0, 0.38)',
-                        }}
-                        inputStyle={{ marginLeft: 10 }}
-                        placeholder={'Số điện thoại'}
-                        onChange={this.onFieldChanged}
-                        name="phone"
-                      />
-                    </CardSection>
-
-                    <CardSection>
-                      <DatePicker
-                        leftIcon={
-                          <Icon
-                            name="calendar"
-                            type="font-awesome"
-                            color="rgba(0, 0, 0, 0.38)"
-                            size={25}
-                            style={{ backgroundColor: 'transparent' }}
-                          />
-                        }
-                        date={this.state.date}
-                        mode="date"
-                        style={{ flex: 1 }}
-                        confirmBtnText="Confirm"
-                        cancelBtnText="Cancel"
-                        placeholder="Chọn ngày sinh"
-                        onDateChange={(date) => { this.setState({ date: date }) }}
-                        format="DD-MM-YYYY"
-                        minDate="01-01-1960"
-                        maxDate="01-01-2018"
-                        customStyles={{
-                          dateIcon: {
-                            position: 'absolute',
-                            left: 0,
-                            top: 4,
-                            marginLeft: 20
-                          },
-                        }}
-                        name="dob"
-                        onChange={this.onFieldChanged}
-                      />
-                    </CardSection>
-
-
-                    <CardSection>
-                      <Picker
-                        onChange={this.onFieldChanged}
-                        name="gender"
-                        mode="dropdown"
-                        iosIcon={<Icon name="arrow-down" />}
-                        style={{ width: undefined }}
-                        placeholder="Select your SIM"
-                        placeholderStyle={{ color: "#bfc6ea" }}
-                        placeholderIconColor="#007aff"
-                        value={this.state.gender}
-                        selectedValue={this.state.selected2}
-                        onChange={this.onFieldChanged}
-                        onValueChange={this.onValueChange2.bind(this)}
-                      >
-                        <Picker.Item label="Nam" value="key0" />
-                        <Picker.Item label="Nữ" value="key1" />
-                      </Picker>
-                    </CardSection>
-                    
                   </View>
                   )}     
                 <Text>

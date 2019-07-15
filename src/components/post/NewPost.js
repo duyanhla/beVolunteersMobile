@@ -107,7 +107,7 @@ class NewPost extends Component {
 
     return (
       <Container>
-        <Header searchBar rounded style={{ elevation: 0, backgroundColor: '#4AB785' }}>
+        <Header searchBar rounded style={{ elevation: 0, backgroundColor: '#4AB785' }} androidStatusBarColor="#4ab785">
           <Left style={{ flex: 0, alignContent: 'flex-start' }}>
             <Icon
               onPress={() => this.props.navigation.goBack()}
