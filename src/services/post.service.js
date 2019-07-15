@@ -23,10 +23,19 @@ export function deletePost(id) {
   }
 export function updateImage(id, image) {
     const formData = new FormData();
-            formData.append('resources', image);
+    for (let i = 0; i < image.length; i++) {
+      formData.append("resources", {
+        uri: image[i].uri,
+        type: image[i].type,
+        name: image[i].fileName
+      });
+    }
     return request({
         url: `posts/${id}/resources`,
         method: 'put',
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
         data: formData
     })
 }

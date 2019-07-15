@@ -13,7 +13,9 @@ class HomeScreen extends Component {
   state = {
     data: [],
   };
-
+  constructor(props) {
+    super(props);
+  }
   componentDidMount = () => {
     getEventJoined(this.props.username)
       .then(data => {
@@ -44,12 +46,14 @@ class HomeScreen extends Component {
 
 
   render() {
+    console.log(this.props)
     return (
+      <Container>
+
       <ScrollView
         onPostTypeChanged={this.onPostTypeChanged}
         stickyHeaderIndices={[0]}
       >
-        <Container>
 
           <Header searchBar rounded style={{ elevation: 0, backgroundColor: '#004916' }}>
             <Left style={{ flex: 0, alignContent: 'flex-start' }}>
@@ -74,8 +78,9 @@ class HomeScreen extends Component {
               successCheckin={this.successCheckin}
             />
           ))}
-        </Container>
       </ScrollView>
+      </Container>
+
     );
   }
 }
@@ -101,8 +106,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = ({
   auth: {
-    user: { name, permission, exp, avatar }
+    user: { name, permission, username, avatar }
   }
-}) => ({ name, permission, exp, avatar });
+}) => ({ name, permission, username, avatar });
 
 export default (connect(mapStateToProps)(HomeScreen));

@@ -35,6 +35,7 @@ class NewPost extends Component {
     type: "PERSONAL_ACTIVITY",
     filePath: {},
     selected: undefined,
+    imageSource: []
   }
 
 
@@ -70,7 +71,8 @@ class NewPost extends Component {
         // You can also display the image using data:
         // let source = { uri: 'data:image/jpeg;base64,' + response.data };
         this.setState({
-          filePath: source,
+          filePath: source, 
+          image: [source]
         });
       }
     });
@@ -90,19 +92,22 @@ class NewPost extends Component {
 
   onSubmit = e => {
     postServices.createPost(this.state).then(({ data: { _id } }) => {
-      postServices.updateImage(_id, this.state.filePath).then(() => {
-        this.setState({ ...initialState });
+      postServices.updateImage(_id, this.state.image).then((res) => {
+        // this.setState({ ...initialState });
         Alert.alert('Tạo bài viết thành công.');
       })
       
     });
+    this.props.navigation.goBack()
   };
 
   render() {
     console.log(this.state)
+    console.log(this.state.filePath)
+
     return (
       <Container>
-        <Header searchBar rounded style={{ elevation: 0, backgroundColor: '#004916' }}>
+        <Header searchBar rounded style={{ elevation: 0, backgroundColor: '#4AB785' }}>
           <Left style={{ flex: 0, alignContent: 'flex-start' }}>
             <Icon
               onPress={() => this.props.navigation.goBack()}
@@ -177,7 +182,7 @@ class NewPost extends Component {
         </Content>
 
         <Footer>
-          <FooterTab style={{backgroundColor: '#004916' }}>
+          <FooterTab style={{backgroundColor: '#4AB785' }}>
             <Button onPress={this.chooseFile.bind(this)}>
               <Icon name="camera" />
             </Button>
