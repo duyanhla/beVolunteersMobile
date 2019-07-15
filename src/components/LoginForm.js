@@ -9,16 +9,15 @@ import {
   LayoutAnimation,
   UIManager,
   KeyboardAvoidingView,
-  ScrollView,
   BackHandler,
   Alert,
-  AsyncStorage
+  AsyncStorage,
+  ScrollView,
 } from 'react-native';
 import { Input, Icon, Button } from 'react-native-elements';
 import { Card, CardSection, Spinner} from './common';
-import DatePicker from 'react-native-datepicker'
 import { connect } from 'react-redux';
-import { Picker } from 'native-base';
+import { createUser } from '../services/user.service';
 import { usernameChanged, passwordChanged, loginUser, categoryChanged } from '../actions';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -41,21 +40,17 @@ UIManager.setLayoutAnimationEnabledExperimental &&
   TabSelector.propTypes = {
     selected: PropTypes.bool.isRequired,
   };
-
+ 
 class LoginForm extends Component {
 
-  state= {
+  state = {
     date:'',
     error:'',
     permission: 'USER',
     username: "",
     password: "",
     rePassword:"",
-    name: "",
-    phone: "",
-    dob: "",
-    email: "",
-    gender: "Nam",
+    email: "a@gmail.com",
     selected2: undefined,
     userData: {}
   };
@@ -90,32 +85,35 @@ class LoginForm extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+
+  onUsernameChange(text) {
+    this.props.usernameChanged(text)
+    this.setState({username : text})
+  }
+
+  onPasswordChange(text) {
+    this.props.passwordChanged(text)
+    this.setState({ password: text })
+  }
+
+
   onFormSubmit = async e => {
     e.preventDefault();
     try {
       if (this.state.password === this.state.rePassword){
         const data = await createUser({ ...this.state }).then(response => { 
-          Message.success("Tạo tài khoản thành công")
         })
         .catch(error => {
-          Message.error("Tạo tài khoản thất bại")
+          Alert.alert("Tạo tài khoản thất bại")
         });
       }else{
-        Message.error("Mật khẩu nhập lại không đúng")
+        Alert.alert("Mật khẩu nhập lại không đúng")
       }
     } catch (error) {
       console.error(error);
     }
 
   };
-
-  onUsernameChange(text) {
-    this.props.usernameChanged(text)
-  }
-
-  onPasswordChange(text) {
-    this.props.passwordChanged(text)
-  }
 
   onButtonPress() {
     const { username, password } = this.props;
@@ -145,27 +143,13 @@ class LoginForm extends Component {
     }
   }
 
-  renderButton(isLoginPage) {
-    return (
-      <Button 
-        onPress={this.onButtonPress.bind(this)}
-        buttonStyle={styles.loginButton}
-        containerStyle={{ marginTop: 2, flex: 0 }}
-        titleStyle={styles.loginTextButton}
-        loading={this.props.loading}
-        error={''}
-        activeOpacity={0.8}
-        title={isLoginPage ? 'LOGIN' : 'SIGN UP'}
-      />
-      
-    );
-  }
+
   render() {
     const isLoginPage = this.props.selectedCategory === 0;
     const isSignUpPage = this.props.selectedCategory === 1;
     return (
       
-      <View style={styles.container}>
+      <KeyboardAvoidingView  style={styles.container} behavior="padding" enabled>
         <ImageBackground source={BG_IMAGE} style={styles.bgImage}>
           <View>
             <KeyboardAvoidingView
@@ -212,7 +196,6 @@ class LoginForm extends Component {
                 <TabSelector selected={isLoginPage} />
                 <TabSelector selected={isSignUpPage} />
               </View>
-
               <View style={styles.formContainer}>
 
                 <CardSection>
@@ -296,6 +279,8 @@ class LoginForm extends Component {
                         inputStyle={{ marginLeft: 10 }}
                         placeholder={'Confirm password'}
                         name="rePassword"
+                        onChangeText={(rePassword) => this.setState({rePassword})}
+                        value={this.state.rePassword}
                         onChange={this.onFieldChanged}
 
                       // errorMessage={'Please enter the same password'}
@@ -326,7 +311,40 @@ class LoginForm extends Component {
                         inputStyle={{ marginLeft: 10 }}
                         placeholder={'Họ và tên'}
                         onChange={this.onFieldChanged}
+                        onChangeText={(name) => this.setState({name})}
+                        value={this.state.name}
                         name="name"
+
+                      />
+                    </CardSection>
+
+                    <CardSection>
+                      <Input
+                        leftIcon={
+                          <Icon
+                            name="mail"
+                            type="ion-icon"
+                            color="rgba(0, 0, 0, 0.38)"
+                            size={25}
+                            style={{ backgroundColor: 'transparent' }}
+                          />
+                        }
+                        keyboardAppearance="light"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        keyboardType="default"
+                        returnKeyType={'done'}
+                        blurOnSubmit={true}
+                        containerStyle={{
+                          marginTop: 16,
+                          borderBottomColor: 'rgba(0, 0, 0, 0.38)',
+                        }}
+                        inputStyle={{ marginLeft: 10 }}
+                        placeholder={'email@gmail.com'}
+                        onChange={this.onFieldChanged}
+                        onChangeText={(email) => this.setState({email})}
+                        value={this.state.email}
+                        name="email"
 
                       />
                     </CardSection>
@@ -338,15 +356,24 @@ class LoginForm extends Component {
                 </Text>
 
                 <CardSection>
-                  {this.renderButton(isLoginPage)}
+                  <Button
+                    onPress={isLoginPage ? this.onButtonPress.bind(this) : this.onFormSubmit}
+                    buttonStyle={styles.loginButton}
+                    containerStyle={{ marginTop: 2, flex: 0 }}
+                    titleStyle={styles.loginTextButton}
+                    loading={this.props.loading}
+                    error={''}
+                    activeOpacity={0.8}
+                    title={isLoginPage ? 'LOGIN' : 'SIGN UP'}
+                  />
                 </CardSection>
                 
-                
-              </View>
+                </View>
+              
             </KeyboardAvoidingView>
           </View>
         </ImageBackground>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

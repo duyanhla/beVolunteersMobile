@@ -102,8 +102,6 @@ class NewPost extends Component {
   };
 
   render() {
-    console.log(this.state)
-    console.log(this.state.filePath)
 
     return (
       <Container>

@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { NavigationActions, DrawerActions } from 'react-navigation';
+import { NavigationActions } from 'react-navigation';
 import { View, ScrollView, StyleSheet, TouchableOpacity, Image, BackHandler, RefreshControl } from 'react-native';
-import { Input, Item, Container, Header, Left, Right, Icon, Text, CardItem, Thumbnail, Body } from 'native-base';
+import { Input, Item, Container, Header, Left, Right, Icon } from 'native-base';
 import { joinEvent, unjoinEvent } from '../services/event.service';
 import { connect } from 'react-redux';
 import { getNewfeed } from "../services/newsfeed";
 import Post from './post/PostDetail';
-import Drawer from './Drawer';
 class HomeScreen extends Component {
   _didFocusSubscription;
   _willBlurSubscription;
